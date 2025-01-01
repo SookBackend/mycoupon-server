@@ -1,0 +1,64 @@
+# 깃액션 다시 확인
+name: SB CI/CD with Gradle
+
+on:
+  push:
+    branches: ["main", "cicd"]
+  pull_request:
+    branches: ["main", "cicd"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set prod.yml
+        run: |
+          cd ./src/main/resources
+          sed -i 's|${DB_URL}|'"${{ secrets.DB_URL }}"'|g' application-prod.yml
+          sed -i 's|${DB_USER}|'"${{ secrets.DB_USER }}"'|g' application-prod.yml
+          sed -i 's|${DB_PWD}|'"${{ secrets.DB_PWD }}"'|g' application-prod.yml
+
+
+      - name: Grant permission
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew bootJar
+
+      - name: Docker build and push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_NAME }}
+          key: ${{ secrets.EC2_KEY }}
+          port: 22
+          script: |
+            sudo usermod -aG docker $USER
+            sudo docker stop mycoupon || true
+            sudo docker rm mycoupon || true
+            sudo docker image rm ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} || true
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+            sudo docker run -e SPRING_PROFILES_ACTIVE=prod \
+                            -e DB_URL=${{ secrets.DB_URL }} \
+                            -e DB_USER=${{ secrets.DB_USER }} \
+                            -e DB_PASSWORD=${{ secrets.DB_PWD }} \
+                            -e EC2_HOST=${{ secrets.EC2_HOST }} \
+                            --name mycoupon -p 8080:8080 -d ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
