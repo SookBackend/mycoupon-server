@@ -1,5 +1,5 @@
-# 깃액션 다시 확인
-name: SB CI/CD with Gradle
+
+name: CI/CD with Gradle
 
 on:
   push:
@@ -43,22 +43,17 @@ jobs:
           docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
 
-      - name: Deploy
+      - name: EC2 Docker Run
         uses: appleboy/ssh-action@master
+        env:
+          APP: "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}"
+          COMPOSE: "/home/ubuntu/docker-compose.yml"
         with:
+          username: ubuntu
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_NAME }}
           key: ${{ secrets.EC2_KEY }}
-          port: 22
+          envs: APP, COMPOSE
           script: |
-            sudo usermod -aG docker $USER
-            sudo docker stop mycoupon || true
-            sudo docker rm mycoupon || true
-            sudo docker image rm ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} || true
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-            sudo docker run -e SPRING_PROFILES_ACTIVE=prod \
-                            -e DB_URL=${{ secrets.DB_URL }} \
-                            -e DB_USER=${{ secrets.DB_USER }} \
-                            -e DB_PASSWORD=${{ secrets.DB_PWD }} \
-                            -e EC2_HOST=${{ secrets.EC2_HOST }} \
-                            --name mycoupon -p 8080:8080 -d ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+            sudo docker-compose -f $COMPOSE down --rmi all
+            sudo docker pull $/$APP:latest
+            sudo docker-compose -f $COMPOSE up -d
