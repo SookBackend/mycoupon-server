@@ -41,6 +41,6 @@ jobs:
 
       - name: Docker Compose up
         run: |
-          cd /home/ubuntu
+          cd $GITHUB_WORKSPACE
           docker compose down
           docker compose up -d
