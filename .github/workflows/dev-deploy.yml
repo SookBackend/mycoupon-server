@@ -1,5 +1,4 @@
-# 깃액션 다시 확인
-name: SB CI/CD with Gradle
+name: CI/CD with Gradle
 
 on:
   push:
@@ -23,24 +22,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Set prod.yml
-        run: |
-          cd ./src/main/resources
-          sed -i 's|${DB_URL}|'"${{ secrets.DB_URL }}"'|g' application-prod.yml
-          sed -i 's|${DB_USER}|'"${{ secrets.DB_USER }}"'|g' application-prod.yml
-          sed -i 's|${DB_PWD}|'"${{ secrets.DB_PWD }}"'|g' application-prod.yml
-
-
-      - name: Grant permission
-        run: chmod +x ./gradlew
-
       - name: Build with Gradle
         run: ./gradlew bootJar
 
       - name: Docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
 
       - name: Deploy
