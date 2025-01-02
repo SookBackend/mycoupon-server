@@ -50,10 +50,9 @@ jobs:
           COMPOSE: "/home/ubuntu/docker-compose.yml"
         with:
           username: ubuntu
-          host: $
-          key: $
+          host: ${{ secrets.EC2_HOST }}
+          key: ${{ secrets.EC2_KEY }}
           envs: APP, COMPOSE
-          script_stop: true
           script: |
             sudo docker-compose -f $COMPOSE down --rmi all
             sudo docker pull $/$APP:latest
