@@ -41,6 +41,6 @@ jobs:
 
       - name: Docker Compose up
         run: |
-          cd ~
+          cd /home/ubuntu
           docker-compose down
           docker-compose up -d
