@@ -1,4 +1,5 @@
-name: CI/CD with Docker Compose
+
+name: CI/CD with Gradle
 
 on:
   push:
@@ -29,18 +30,31 @@ jobs:
           sed -i 's|${DB_USER}|'"${{ secrets.DB_USER }}"'|g' application-prod.yml
           sed -i 's|${DB_PWD}|'"${{ secrets.DB_PWD }}"'|g' application-prod.yml
 
+
       - name: Grant permission
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
         run: ./gradlew bootJar
 
-      - name: Build Docker image
+      - name: Docker build and push
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
 
-      - name: Docker Compose up
-        run: |
-          cd $GITHUB_WORKSPACE
-          docker compose down
-          docker compose up -d
+      - name: EC2 Docker Run
+        uses: appleboy/ssh-action@master
+        env:
+          APP: "${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}"
+          COMPOSE: "/home/ubuntu/docker-compose.yml"
+        with:
+          username: ubuntu
+          host: $
+          key: $
+          envs: APP, COMPOSE
+          script_stop: true
+          script: |
+            sudo docker-compose -f $COMPOSE down --rmi all
+            sudo docker pull $/$APP:latest
+            sudo docker-compose -f $COMPOSE up -d
