@@ -1,4 +1,4 @@
-name: CI/CD with Gradle
+name: CI/CD with Docker Compose
 
 on:
   push:
@@ -22,31 +22,25 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Set prod.yml
+        run: |
+          cd ./src/main/resources
+          sed -i 's|${DB_URL}|'"${{ secrets.DB_URL }}"'|g' application-prod.yml
+          sed -i 's|${DB_USER}|'"${{ secrets.DB_USER }}"'|g' application-prod.yml
+          sed -i 's|${DB_PWD}|'"${{ secrets.DB_PWD }}"'|g' application-prod.yml
+
+      - name: Grant permission
+        run: chmod +x ./gradlew
+
       - name: Build with Gradle
         run: ./gradlew bootJar
 
-      - name: Docker build and push
+      - name: Build Docker image
         run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} .
-          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
 
-      - name: Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_NAME }}
-          key: ${{ secrets.EC2_KEY }}
-          port: 22
-          script: |
-            sudo usermod -aG docker $USER
-            sudo docker stop mycoupon || true
-            sudo docker rm mycoupon || true
-            sudo docker image rm ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }} || true
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-            sudo docker run -e SPRING_PROFILES_ACTIVE=prod \
-                            -e DB_URL=${{ secrets.DB_URL }} \
-                            -e DB_USER=${{ secrets.DB_USER }} \
-                            -e DB_PASSWORD=${{ secrets.DB_PWD }} \
-                            -e EC2_HOST=${{ secrets.EC2_HOST }} \
-                            --name mycoupon -p 8080:8080 -d ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+      - name: Docker Compose up
+        run: |
+          cd ~
+          docker-compose down
+          docker-compose up -d
