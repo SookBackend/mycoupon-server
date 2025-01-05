@@ -22,7 +22,6 @@ import javax.crypto.SecretKey;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 // jwt를 사용하여 사용자 인증과 권한 부여를 처리하는 클래스 -> 토큰 생성, 복호화, 검증

@@ -5,9 +5,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,6 +20,7 @@ import java.util.List;
 // 클라이언트 요청 jwt가 유효하다면 토큰의 Authentication을 SecurityContext에 저장 -> 인증된 요청 처리 가능
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     public final TokenProvider tokenProvider;
@@ -43,7 +44,14 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         String requestUri = request.getRequestURI();
         String accessToken = resolveToken(request);
 
-        // 요청 URL이 제외된 URL 목록에 포함되어 있다면 필터 건너뛰기
+        // 토큰이 없다면 다음 필터로 넘기기
+        if (accessToken == null) {
+            filterChain.doFilter(request , response);
+            log.info("token null");
+            return;
+        }
+
+        // 요청 URL이 제외된 URL 목록에 포함되어 있다면 다음 필터로 넘기기
         if (isExcludedUrl(requestUri)) {
             filterChain.doFilter(request, response);
             return;
