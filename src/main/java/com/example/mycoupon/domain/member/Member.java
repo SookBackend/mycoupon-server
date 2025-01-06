@@ -18,23 +18,18 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String providerId;
+    private String socialId;
 
-    @Enumerated(EnumType.STRING)
-    private ProviderType providerType;
+//    @Enumerated(EnumType.STRING)
+//    private ProviderType providerType;
 
-    @Column(nullable = false, unique = true)
     private String name;
+
+    private String email;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     private String profileImageUrl;
-
-    private String refreshToken;
-
-    public void updateRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 
 }

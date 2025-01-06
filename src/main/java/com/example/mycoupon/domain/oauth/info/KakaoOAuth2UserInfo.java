@@ -3,30 +3,36 @@ package com.example.mycoupon.domain.oauth.info;
 import java.util.Map;
 
 // 커스텀 사용자 정보 구체화
-public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
+public class KakaoOAuth2UserInfo{
+    public static String socialId;
+    public static Map<String, Object> account;
+    public static Map<String, Object> profile;
+    public static String email;
+
     public KakaoOAuth2UserInfo(Map<String, Object> attributes) {
-        super(attributes);
+        socialId = String.valueOf(attributes.get("id"));
+        account = (Map<String, Object>) attributes.get("kakao_account");
+
+        if (account != null) {
+            profile = (Map<String, Object>) account.get("profile");
+            email = (String) account.get("email");
+        }
     }
 
-    @Override
+    public String getSocialId() {
+        return socialId;
+    }
+
     public String getName() {
-        return attributes.get("id").toString();
+        return String.valueOf(profile.get("nickname"));
     }
 
-    // Kakao의 attributes의 예시 참조
-    @Override
-    public String getProviderId() {
-        Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
-        if (properties != null) {return null;}
-        return (String) properties.get("nickname");
+    public String getEmail(){
+        return email;
     }
 
-    // Kakao의 attributes의 예시 참조
-    @Override
     public String getProfileImageUrl() {
-        Map<String, Object> properties = (Map<String, Object>) attributes.get("properties");
-        if (properties != null) {return null;}
-        return (String) properties.get("profile_image");
+        return String.valueOf(profile.get("profile_image_url"));
     }
 
 }

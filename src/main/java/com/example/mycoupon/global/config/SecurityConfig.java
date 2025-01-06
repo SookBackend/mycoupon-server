@@ -2,10 +2,9 @@ package com.example.mycoupon.global.config;
 
 import com.example.mycoupon.domain.jwt.TokenProvider;
 import com.example.mycoupon.domain.jwt.TokenAuthenticationFilter;
-import com.example.mycoupon.domain.member.MemberRepository;
 import com.example.mycoupon.domain.oauth.handler.FailureHandler;
 import com.example.mycoupon.domain.oauth.handler.SuccessHandler;
-import com.example.mycoupon.domain.oauth.service.CustomOAuth2UserService;
+import com.example.mycoupon.domain.oauth.service.OAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +31,7 @@ public class SecurityConfig {
     private final TokenProvider jwtTokenProvider;
     private final SuccessHandler successHandler;
     private final FailureHandler failureHandler;
-    private final CustomOAuth2UserService customUserService;
+    private final OAuth2UserService oauth2UserService;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -60,15 +59,12 @@ public class SecurityConfig {
                 .formLogin(FormLoginConfigurer::disable) // 기본 로그인 폼 사용 안함
                 .oauth2Login(customConfigurer -> customConfigurer
                         .successHandler(successHandler)
-                        .failureHandler(failureHandler)
-                        .userInfoEndpoint(endpointConfig -> endpointConfig.userService(customUserService))
+                        .userInfoEndpoint(userInfoEndpoint ->
+                                userInfoEndpoint.userService(oauth2UserService)
+                        )
                 )
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable);
-//                .csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(auth -> auth
-//                        .anyRequest().permitAll() // 모든 요청 허용
-//                );
         return http.build();
     }
 
