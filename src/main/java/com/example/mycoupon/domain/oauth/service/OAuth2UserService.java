@@ -37,7 +37,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Map<String, Object> attributes = oAuth2User.getAttributes();
-        OAuth2AccessToken accessToken = userRequest.getAccessToken();
+        OAuth2AccessToken socialAccessToken = userRequest.getAccessToken();
 
         KakaoOAuth2UserInfo kakaoOAuth2UserInfo = new KakaoOAuth2UserInfo(attributes);
         String socialId = kakaoOAuth2UserInfo.getSocialId();
@@ -48,12 +48,12 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         Optional<Member> bySocialId = memberRepository.findBySocialId(socialId);
         log.info("Member found: {}", bySocialId.isPresent());
 
-        Member member = bySocialId.orElseGet(()->saveSocialMember(socialId,name,email,profileImageUrl, accessToken.getTokenValue()));
-        updateAccessToken(member, accessToken.getTokenValue());
+        Member member = bySocialId.orElseGet(()->saveSocialMember(socialId,name,email,profileImageUrl, socialAccessToken.getTokenValue()));
+        updateSocialAccessToken(member, socialAccessToken.getTokenValue());
         MemberDto memberDto = new MemberDto(member.getId(), member.getEmail(), member.getName(), member.getSocialId(), member.getProfileImageUrl(), member.getRole());
 
         log.info("OAuth2 User Info: Social ID = {}, Name = {}, Email = {}, Profile Image URL = {}, Access Token = {}",
-                socialId, name, email, profileImageUrl, accessToken.getTokenValue());
+                socialId, name, email, profileImageUrl, socialAccessToken.getTokenValue());
 
         return new UserPrincipal(
                 memberDto,
@@ -69,7 +69,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                 .email(email)
                 .role(Role.USER)
                 .profileImageUrl(profileImageUrl)
-                .accessToken(accessToken)
+                .socialAccessToken(accessToken)
                 .build();
 
         Member savedMember = memberRepository.save(member);
@@ -77,7 +77,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
     }
 
-    public void updateAccessToken(Member member, String accessToken){
-        member.updateKakaoToken(accessToken);
+    public void updateSocialAccessToken(Member member, String accessToken){
+        member.updateSocialAccessToken(accessToken);
     }
 }

@@ -54,7 +54,7 @@ public class TokenProvider {
         Map<String, Object> claims = validateToken(token);
 
         // 클레임에서 사용자 정보 추출
-        Long id = (Long) claims.get("id");
+        Long id = ((Integer) claims.get("id")).longValue();
         String name = (String) claims.get("name");
         String stRole = (String) claims.get("role");
         Role role = Role.valueOf(stRole);
@@ -86,8 +86,10 @@ public class TokenProvider {
                     .getBody();
         } catch (ExpiredJwtException e){
             throw new CustomException(ErrorCode.EXPIRED_JWT_EXCEPTION);
-        } catch (Exception e){
-            throw new RuntimeException(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN_FORMAT);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
 
         return claim;
