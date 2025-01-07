@@ -1,9 +1,8 @@
-package com.example.mycoupon.global.config;
+package com.example.mycoupon.global.security;
 
 import com.example.mycoupon.domain.jwt.TokenProvider;
-import com.example.mycoupon.domain.jwt.TokenAuthenticationFilter;
-import com.example.mycoupon.domain.oauth.handler.FailureHandler;
-import com.example.mycoupon.domain.oauth.handler.SuccessHandler;
+import com.example.mycoupon.global.security.filter.TokenAuthenticationFilter;
+import com.example.mycoupon.global.security.handler.LoginSuccessHandler;
 import com.example.mycoupon.domain.oauth.service.OAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -28,9 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final TokenProvider jwtTokenProvider;
-    private final SuccessHandler successHandler;
-    private final FailureHandler failureHandler;
     private final OAuth2UserService oauth2UserService;
 
     @Bean
@@ -49,16 +45,32 @@ public class SecurityConfig {
     }
 
     @Bean
+    public LoginSuccessHandler loginSuccessHandler() {
+        return new LoginSuccessHandler();
+    }
+
+    @Bean
+    public TokenAuthenticationFilter tokenAuthenticationFilter() {
+        return new TokenAuthenticationFilter();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        // BCrypt Encoder 사용
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/","/swagger-ui/index.html", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**","/swagger-resources/**", "/v3/api-docs").permitAll() // 인증 없이 접근 가능
                         .anyRequest().authenticated() // 나머지 URL은 인증 필요
                 )
-                .addFilterBefore(new TokenAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class) // JWT 토큰을 먼저 검증하고 사용자 인증 해야 함
+                .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class) // JWT 토큰을 먼저 검증하고 사용자 인증 해야 함
                 .formLogin(FormLoginConfigurer::disable) // 기본 로그인 폼 사용 안함
                 .oauth2Login(customConfigurer -> customConfigurer
-                        .successHandler(successHandler)
+                        .successHandler(loginSuccessHandler())
                         .userInfoEndpoint(userInfoEndpoint ->
                                 userInfoEndpoint.userService(oauth2UserService)
                         )
@@ -66,12 +78,6 @@ public class SecurityConfig {
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        // BCrypt Encoder 사용
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
 }

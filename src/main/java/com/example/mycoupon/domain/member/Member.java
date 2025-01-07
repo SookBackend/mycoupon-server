@@ -32,4 +32,9 @@ public class Member {
 
     private String profileImageUrl;
 
+    private String accessToken;
+
+    public void updateKakaoToken(String accessToken){
+        this.accessToken = accessToken;
+    }
 }

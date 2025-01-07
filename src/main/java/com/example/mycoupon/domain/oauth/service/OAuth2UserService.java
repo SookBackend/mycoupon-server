@@ -6,6 +6,7 @@ import com.example.mycoupon.domain.member.MemberRepository;
 import com.example.mycoupon.domain.member.Role;
 import com.example.mycoupon.domain.oauth.entity.UserPrincipal;
 import com.example.mycoupon.domain.oauth.info.KakaoOAuth2UserInfo;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +26,7 @@ import java.util.Optional;
 // http://localhost:8080/oauth2/authorization/kakao
 @Service
 @Slf4j
+@Transactional
 @RequiredArgsConstructor
 public class OAuth2UserService extends DefaultOAuth2UserService {
 
@@ -33,13 +35,9 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
 
-        log.info("loadUser method called");
-
         OAuth2User oAuth2User = super.loadUser(userRequest);
         Map<String, Object> attributes = oAuth2User.getAttributes();
-        OAuth2AccessToken accessToken=userRequest.getAccessToken();
-
-        System.out.println("Kakao API Response: " + attributes);
+        OAuth2AccessToken accessToken = userRequest.getAccessToken();
 
         KakaoOAuth2UserInfo kakaoOAuth2UserInfo = new KakaoOAuth2UserInfo(attributes);
         String socialId = kakaoOAuth2UserInfo.getSocialId();
@@ -49,8 +47,13 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         Optional<Member> bySocialId = memberRepository.findBySocialId(socialId);
         log.info("Member found: {}", bySocialId.isPresent());
-        Member member = bySocialId.orElseGet(()->saveSocialMember(socialId,name,email,profileImageUrl));
+
+        Member member = bySocialId.orElseGet(()->saveSocialMember(socialId,name,email,profileImageUrl, accessToken.getTokenValue()));
+        updateAccessToken(member, accessToken.getTokenValue());
         MemberDto memberDto = new MemberDto(member.getId(), member.getEmail(), member.getName(), member.getSocialId(), member.getProfileImageUrl(), member.getRole());
+
+        log.info("OAuth2 User Info: Social ID = {}, Name = {}, Email = {}, Profile Image URL = {}, Access Token = {}",
+                socialId, name, email, profileImageUrl, accessToken.getTokenValue());
 
         return new UserPrincipal(
                 memberDto,
@@ -59,18 +62,22 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         );
     }
 
-    private Member saveSocialMember(String socialId, String name, String email, String profileImageUrl) {
-        log.info("Saving member with socialId: {}, name: {}, email: {}, profileImageUrl: {}", socialId, name, email, profileImageUrl);
+    private Member saveSocialMember(String socialId, String name, String email, String profileImageUrl, String accessToken) {
         Member member = Member.builder()
                 .name(name)
                 .socialId(socialId)
                 .email(email)
                 .role(Role.USER)
                 .profileImageUrl(profileImageUrl)
+                .accessToken(accessToken)
                 .build();
 
         Member savedMember = memberRepository.save(member);
         return savedMember;
 
+    }
+
+    public void updateAccessToken(Member member, String accessToken){
+        member.updateKakaoToken(accessToken);
     }
 }
