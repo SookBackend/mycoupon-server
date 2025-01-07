@@ -2,6 +2,7 @@ package com.example.mycoupon.global.security.filter;
 
 import com.example.mycoupon.domain.jwt.JwtConfig;
 import com.example.mycoupon.domain.jwt.TokenProvider;
+import com.example.mycoupon.global.redis.RedisUtil;
 import com.example.mycoupon.global.response.exception.CustomException;
 import com.example.mycoupon.global.response.exception.ErrorCode;
 import jakarta.servlet.FilterChain;
@@ -25,6 +26,7 @@ import java.util.List;
 @Slf4j
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
+    private final RedisUtil redisUtil;
     private static final String[] whitelist = {
             // login
             "/signUp", "/login", "/refresh", "/", "/index.html", "/oauth2/login", "/login/oauth2/code/*", "/oauth2/authorization/kakao","/member/*/refresh",

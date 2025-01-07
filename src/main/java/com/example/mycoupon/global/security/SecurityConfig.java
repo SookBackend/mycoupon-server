@@ -1,6 +1,7 @@
 package com.example.mycoupon.global.security;
 
 import com.example.mycoupon.domain.jwt.TokenProvider;
+import com.example.mycoupon.global.redis.RedisUtil;
 import com.example.mycoupon.global.security.filter.TokenAuthenticationFilter;
 import com.example.mycoupon.global.security.handler.LoginSuccessHandler;
 import com.example.mycoupon.domain.oauth.service.OAuth2UserService;
@@ -28,6 +29,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final OAuth2UserService oauth2UserService;
+    private final RedisUtil redisUtil;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -46,12 +48,12 @@ public class SecurityConfig {
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler();
+        return new LoginSuccessHandler(redisUtil);
     }
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
-        return new TokenAuthenticationFilter();
+        return new TokenAuthenticationFilter(redisUtil);
     }
 
     @Bean
