@@ -1,4 +1,4 @@
-package com.example.mycoupon.domain.jwt;
+package com.example.mycoupon.domain.jwt.config;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
