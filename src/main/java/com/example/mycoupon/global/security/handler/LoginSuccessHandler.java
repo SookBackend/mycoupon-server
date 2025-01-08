@@ -1,17 +1,15 @@
 package com.example.mycoupon.global.security.handler;
 
-import com.example.mycoupon.domain.jwt.JwtConfig;
+import com.example.mycoupon.domain.jwt.config.JwtConfig;
 import com.example.mycoupon.domain.jwt.TokenProvider;
 import com.example.mycoupon.domain.oauth.entity.UserPrincipal;
 import com.example.mycoupon.global.redis.RedisUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 

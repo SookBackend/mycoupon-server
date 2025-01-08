@@ -1,6 +1,6 @@
 package com.example.mycoupon.global.security.filter;
 
-import com.example.mycoupon.domain.jwt.JwtConfig;
+import com.example.mycoupon.domain.jwt.config.JwtConfig;
 import com.example.mycoupon.domain.jwt.TokenProvider;
 import com.example.mycoupon.global.redis.RedisUtil;
 import com.example.mycoupon.global.response.exception.CustomException;
@@ -17,7 +17,6 @@ import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 // jwt로 username, pwd 인증을 수행
 // UsernamePasswordAuthenticationFilter 이전에 실행
