@@ -1,4 +1,4 @@
-package com.example.mycoupon.domain.jwt;
+package com.example.mycoupon.domain.jwt.dto;
 
 public record RefreshDto (
         String accessToken,

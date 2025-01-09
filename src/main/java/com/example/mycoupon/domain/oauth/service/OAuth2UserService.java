@@ -4,8 +4,8 @@ import com.example.mycoupon.domain.member.Member;
 import com.example.mycoupon.domain.member.MemberDto;
 import com.example.mycoupon.domain.member.MemberRepository;
 import com.example.mycoupon.domain.member.Role;
-import com.example.mycoupon.domain.oauth.entity.UserPrincipal;
-import com.example.mycoupon.domain.oauth.info.KakaoOAuth2UserInfo;
+import com.example.mycoupon.domain.member.UserPrincipal;
+import com.example.mycoupon.domain.oauth.entity.KakaoOAuth2UserInfo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 

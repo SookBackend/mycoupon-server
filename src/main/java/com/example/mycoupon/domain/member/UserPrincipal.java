@@ -1,7 +1,5 @@
-package com.example.mycoupon.domain.oauth.entity;
+package com.example.mycoupon.domain.member;
 
-import com.example.mycoupon.domain.member.Member;
-import com.example.mycoupon.domain.member.MemberDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

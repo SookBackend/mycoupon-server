@@ -1,4 +1,4 @@
-package com.example.mycoupon.domain.oauth.info;
+package com.example.mycoupon.domain.oauth.entity;
 
 import java.util.Map;
 
