@@ -1,4 +1,4 @@
-package com.example.mycoupon.domain.member;
+package com.example.mycoupon.domain.member.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

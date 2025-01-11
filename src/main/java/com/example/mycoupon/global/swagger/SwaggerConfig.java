@@ -14,7 +14,7 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI publicApi() {
-        String jwtSchemeName = "JWT TOKEN";
+        String jwtSchemeName = "bearerAuth";
 
         // SecuritySchemes 등록
         Components components = new Components()

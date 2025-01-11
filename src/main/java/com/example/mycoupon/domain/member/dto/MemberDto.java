@@ -1,4 +1,6 @@
-package com.example.mycoupon.domain.member;
+package com.example.mycoupon.domain.member.dto;
+
+import com.example.mycoupon.domain.member.entity.Role;
 
 public record MemberDto (
         Long id,

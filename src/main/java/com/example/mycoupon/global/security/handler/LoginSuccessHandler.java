@@ -2,7 +2,7 @@ package com.example.mycoupon.global.security.handler;
 
 import com.example.mycoupon.domain.jwt.config.JwtConfig;
 import com.example.mycoupon.domain.jwt.TokenProvider;
-import com.example.mycoupon.domain.member.UserPrincipal;
+import com.example.mycoupon.domain.member.entity.UserPrincipal;
 import com.example.mycoupon.global.redis.RedisUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

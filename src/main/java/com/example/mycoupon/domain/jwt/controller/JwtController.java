@@ -1,12 +1,13 @@
 package com.example.mycoupon.domain.jwt.controller;
 
+import com.example.mycoupon.domain.jwt.controller.api.JwtApi;
 import com.example.mycoupon.domain.jwt.dto.RefreshDto;
 import com.example.mycoupon.domain.jwt.TokenProvider;
 import com.example.mycoupon.domain.jwt.config.JwtConfig;
-import com.example.mycoupon.domain.member.Member;
-import com.example.mycoupon.domain.member.MemberService;
+import com.example.mycoupon.domain.member.entity.Member;
+import com.example.mycoupon.domain.member.service.MemberService;
 import com.example.mycoupon.global.redis.RedisUtil;
-import com.example.mycoupon.global.response.dto.ApiResponse;
+import com.example.mycoupon.global.response.dto.Response;
 import com.example.mycoupon.global.response.dto.SuccessStatus;
 import com.example.mycoupon.global.response.exception.CustomException;
 import com.example.mycoupon.global.response.exception.ErrorCode;
@@ -21,14 +22,14 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class JwtController {
+public class JwtController implements JwtApi {
 
     private final MemberService memberService;
     private final RedisUtil redisUtil;
 
     // 헤더에 access token(x) refresh token(O)
     @GetMapping("/member/{id}/refresh")
-    public ApiResponse<?> refresh(@RequestHeader("Authorization") String authHeader) {
+    public Response<?> refresh(@RequestHeader("Authorization") String authHeader) {
 
         String refreshToken= TokenProvider.getTokenFromHeader(authHeader);
         Map<String, Object> claim = TokenProvider.validateToken(refreshToken);
@@ -51,9 +52,9 @@ public class JwtController {
             redisUtil.set(byId.getEmail(), newRefreshToken, 60*24);
 
             RefreshDto result = new RefreshDto(newAccessToken, newRefreshToken);
-            return ApiResponse.success(result, SuccessStatus.TOKEN_REFESH_SUCCESS);
+            return Response.success(result, SuccessStatus.TOKEN_REFESH_SUCCESS);
         }
 
-        return ApiResponse.failure("400","토큰 재발급에 실패했습니다.");
+        return Response.failure("500","토큰 재발급에 실패했습니다.");
     }
 }

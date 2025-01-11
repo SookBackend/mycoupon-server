@@ -1,6 +1,6 @@
 package com.example.mycoupon.global;
 
-import com.example.mycoupon.domain.member.Member;
+import com.example.mycoupon.domain.member.entity.Member;
 import com.example.mycoupon.domain.oauth.dto.KakaoLogoutDto;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.ClientResponse;
