@@ -18,12 +18,11 @@ public class CallApiService {
     public static ClientResponse checkKakaoToken(String kakaoAccessToken){
         WebClient webClient = WebClient.builder().build();
 
-        return (ClientResponse) webClient
+        return webClient
                 .get()
                 .uri("https://kapi.kakao.com/v1/user/access_token_info")
                 .header("Authorization", "Bearer " + kakaoAccessToken)
-                .retrieve() // 요청을 실행하고 응답 객체를 ClientResponse로 반환
-                .toBodilessEntity()
+                .exchange()
                 .block();
     }
 
@@ -35,6 +34,19 @@ public class CallApiService {
                 .uri("https://kapi.kakao.com/v1/user/logout")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .header("Authorization", "Bearer " + kakaoAccessToken)
+                .retrieve()
+                .bodyToMono(KakaoLogoutDto.class)
+                .block();
+    }
+
+    public static KakaoLogoutDto resignKakao(String kakaoAccessToken){
+        WebClient webClient = WebClient.builder().build();
+
+        return webClient
+                .post()
+                .uri("https://kapi.kakao.com/v1/user/unlink")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header("Authorization","Bearer "+kakaoAccessToken)
                 .retrieve()
                 .bodyToMono(KakaoLogoutDto.class)
                 .block();
