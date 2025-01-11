@@ -1,9 +1,9 @@
 package com.example.mycoupon.domain.jwt;
 
 import com.example.mycoupon.domain.jwt.config.JwtConfig;
-import com.example.mycoupon.domain.member.MemberDto;
-import com.example.mycoupon.domain.member.Role;
-import com.example.mycoupon.domain.member.UserPrincipal;
+import com.example.mycoupon.domain.member.dto.MemberDto;
+import com.example.mycoupon.domain.member.entity.Role;
+import com.example.mycoupon.domain.member.entity.UserPrincipal;
 import com.example.mycoupon.global.response.exception.CustomException;
 import com.example.mycoupon.global.response.exception.ErrorCode;
 import io.jsonwebtoken.ExpiredJwtException;

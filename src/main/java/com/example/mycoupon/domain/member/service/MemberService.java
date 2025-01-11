@@ -1,5 +1,7 @@
-package com.example.mycoupon.domain.member;
+package com.example.mycoupon.domain.member.service;
 
+import com.example.mycoupon.domain.member.repository.MemberRepository;
+import com.example.mycoupon.domain.member.entity.Member;
 import com.example.mycoupon.global.response.exception.CustomException;
 import com.example.mycoupon.global.response.exception.ErrorCode;
 import jakarta.transaction.Transactional;

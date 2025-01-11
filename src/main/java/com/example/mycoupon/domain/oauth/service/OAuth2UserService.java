@@ -1,10 +1,10 @@
 package com.example.mycoupon.domain.oauth.service;
 
-import com.example.mycoupon.domain.member.Member;
-import com.example.mycoupon.domain.member.MemberDto;
-import com.example.mycoupon.domain.member.MemberRepository;
-import com.example.mycoupon.domain.member.Role;
-import com.example.mycoupon.domain.member.UserPrincipal;
+import com.example.mycoupon.domain.member.entity.Member;
+import com.example.mycoupon.domain.member.dto.MemberDto;
+import com.example.mycoupon.domain.member.repository.MemberRepository;
+import com.example.mycoupon.domain.member.entity.Role;
+import com.example.mycoupon.domain.member.entity.UserPrincipal;
 import com.example.mycoupon.domain.oauth.entity.KakaoOAuth2UserInfo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

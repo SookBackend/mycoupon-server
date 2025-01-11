@@ -1,6 +1,5 @@
-package com.example.mycoupon.domain.member;
+package com.example.mycoupon.domain.member.entity;
 
-import com.example.mycoupon.domain.oauth.entity.ProviderType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
