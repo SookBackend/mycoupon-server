@@ -36,7 +36,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = TokenProvider.generateToken(userPrincipal.getMemberInfo(), JwtConfig.REFRESH_EXP_TIME);
 
         // key: 로그인한 유저의 email, value: refresh 토큰 -> redis에 저장
-        redisUtil.set(userPrincipal.getMemberDto().email(),refreshToken,60*24);
+        redisUtil.set(userPrincipal.getMemberDto().email(),refreshToken,60*24L);
 
         Long memberId = userPrincipal.getMemberDto().id();
         String redirectUri = "http://localhost:8080/auth";

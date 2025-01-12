@@ -28,7 +28,6 @@ public class JwtController implements JwtApi {
     private final RedisUtil redisUtil;
 
     // 헤더에 access token(x) refresh token(O)
-    @GetMapping("/member/{id}/refresh")
     public Response<?> refresh(@RequestHeader("Authorization") String authHeader) {
 
         String refreshToken= TokenProvider.getTokenFromHeader(authHeader);
@@ -49,7 +48,7 @@ public class JwtController implements JwtApi {
             String newAccessToken = TokenProvider.generateToken(claim, JwtConfig.ACCESS_EXP_TIME);
             String newRefreshToken = TokenProvider.generateToken(claim, JwtConfig.REFRESH_EXP_TIME);
 
-            redisUtil.set(byId.getEmail(), newRefreshToken, 60*24);
+            redisUtil.set(byId.getEmail(), newRefreshToken, 60*24L);
 
             RefreshDto result = new RefreshDto(newAccessToken, newRefreshToken);
             return Response.success(result, SuccessStatus.TOKEN_REFESH_SUCCESS);

@@ -19,6 +19,6 @@ public class ExceptionHandlerAdvice {
     public ResponseEntity<Response<Void>> handleGeneralException(Exception e) {
         return ResponseEntity
                 .status(500)
-                .body(Response.failure("500", "exception test"));
+                .body(Response.failure("500", e.getMessage()));
     }
 }

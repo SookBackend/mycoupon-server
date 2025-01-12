@@ -16,7 +16,8 @@ public interface MemberApi {
 
     @Operation(
             summary = "카카오 계정 사용자 정보압나다",
-            description = "사용자 정보"
+            description = "사용자 정보",
+            security = @SecurityRequirement(name = "bearerAuth")
     )
     @Parameter(
             in = ParameterIn.HEADER,

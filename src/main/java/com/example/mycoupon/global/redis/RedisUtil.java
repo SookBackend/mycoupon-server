@@ -19,7 +19,7 @@ public class RedisUtil {
         return redisTemplate.opsForValue().get(key);
     }
 
-    public void set(String key, Object o, int min) {
+    public void set(String key, Object o, Long min) {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(o.getClass())); // 객체를 json으로 직렬화
         redisTemplate.opsForValue().set(key, o, min, TimeUnit.MINUTES);
     }
@@ -37,7 +37,7 @@ public class RedisUtil {
         return redisTemplate.opsForValue().get(key);
     }
 
-    public void setBlackList(String key, Object o, int min) {
+    public void setBlackList(String key, Object o, Long min) {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(o.getClass())); // 객체를 json으로 직렬화
         redisTemplate.opsForValue().set(key, o, min, TimeUnit.MINUTES);
     }

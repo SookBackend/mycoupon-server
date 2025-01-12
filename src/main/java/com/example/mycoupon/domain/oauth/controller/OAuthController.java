@@ -27,7 +27,6 @@ public class OAuthController implements OAuthApi {
     private final MemberService memberService;
     private final RedisUtil redisUtil;
 
-    @GetMapping("/member/logout")
     public Response<?> logoutKakao(@RequestHeader("Authorization") String authHeader) {
 
         String accessToken = TokenProvider.getTokenFromHeader(authHeader);
@@ -37,7 +36,7 @@ public class OAuthController implements OAuthApi {
 
         // 사용자 계정의 카카오 access token 가져와서 black list에 추가
         ClientResponse clientResponse = CallApiService.checkKakaoToken(byId.getSocialAccessToken()); // webflux
-        redisUtil.setBlackList(accessToken,"accessToken",30); // 고유 값을 key로 저장
+        redisUtil.setBlackList(accessToken,"accessToken",30L); // 고유 값을 key로 저장
 
 
         // 카카오 access token이 유효하지 않은 경우
@@ -47,7 +46,6 @@ public class OAuthController implements OAuthApi {
         return Response.success(CallApiService.logoutKakao(byId, byId.getSocialAccessToken()),SuccessStatus.KAKAO_LOGOUT_SUCCESS);
     }
 
-    @GetMapping("/member/resign")
     public Response<?> resignKakao(@RequestHeader("Authorization") String authHeader) {
         String accessToken = TokenProvider.getTokenFromHeader(authHeader);
         Map<String, Object> claim = TokenProvider.validateToken(accessToken);
