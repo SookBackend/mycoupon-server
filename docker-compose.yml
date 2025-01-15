@@ -18,14 +18,14 @@ services:
       - my_network
 
   springboot:
-    image: happine2s/mycoupon
+    image: happine2s/mycoupon:latest
     ports:
       - "8080:8080"
     networks:
       - my_network
 
   redis:
-    image: redis.latest
+    image: redis:latest
     container_name: redis
     ports:
       - "6379:6379"
