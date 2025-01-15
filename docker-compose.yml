@@ -23,11 +23,11 @@ services:
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
     depends_on:
-      redis:
-        condition: service_healthy
+      - redis
     networks:
       - my-network
     restart: always
+    command: ["./wait-for-it.sh", "redis:6379", "--", "java", "-jar", "app.jar"]
 
   redis:
     image: "redis:latest"
