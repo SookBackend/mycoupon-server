@@ -29,7 +29,15 @@ jobs:
           sed -i 's|${DB_URL}|'"${{ secrets.DB_URL }}"'|g' application-prod.yml
           sed -i 's|${DB_USER}|'"${{ secrets.DB_USER }}"'|g' application-prod.yml
           sed -i 's|${DB_PWD}|'"${{ secrets.DB_PWD }}"'|g' application-prod.yml
-
+          sed -i 's|${KAKAO_CLIENT_ID}|'"${{ secrets.KAKAO_CLIENT_ID }}"'|g' application-prod.yml
+          sed -i 's|${KAKAO_CLIENT_SECRET}|'"${{ secrets.KAKAO_CLIENT_SECRET }}"'|g' application-prod.yml
+          sed -i 's|${KAKAO_CLIENT_AUTHENTICATION_METHOD}|'"${{ secrets.KAKAO_CLIENT_AUTHENTICATION_METHOD }}"'|g' application-prod.yml
+          sed -i 's|${KAKAO_SCOPE}|'"${{ secrets.KAKAO_SCOPE }}"'|g' application-prod.yml
+          sed -i 's|${KAKAO_AUTH_GRANT_TYPE}|'"${{ secrets.KAKAO_AUTH_GRANT_TYPE }}"'|g' application-prod.yml
+          sed -i 's|${REDIS_PORT}|'"${{ secrets.REDIS_PORT }}"'|g' application-prod.yml
+          sed -i 's|${KAKAO_AUTH_GRANT_TYPE}|'"${{ secrets.KAKAO_AUTH_GRANT_TYPE }}"'|g' application-prod.yml
+          sed -i 's|${JWT_KEY}|'"${{ secrets.JWT_KEY }}"'|g' application-prod.yml
+          
 
       - name: Grant permission
         run: chmod +x ./gradlew
