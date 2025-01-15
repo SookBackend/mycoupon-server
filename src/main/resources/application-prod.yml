@@ -3,16 +3,14 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DB_URL}
     username: ${DB_USER}
-    password: ${DB_PASSWORD}
-    thymeleaf:
-      cache: false
+    password: ${DB_PWD}
 
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: false
     show-sql: true
     hibernate:
-      ddl-auto: update # 첫 배포 이후 validate 으로 수정
+      ddl-auto: update
 
   security:
     oauth2:
@@ -21,10 +19,10 @@ spring:
           kakao:
             client-id: ${KAKAO_CLIENT_ID}
             client-secret: ${KAKAO_CLIENT_SECRET}
-            client-authentication-method: ${KAKAO_CLIENT_AUTHENTICATION_METHOD}
-            scope: ${KAKAO_SCOPE}
-            authorization-grant-type: ${KAKAO_AUTH_GRANT_TYPE}
-            redirect-uri: ${KAKAO_REDIRECT_URI}
+            client-authentication-method: client_secret_post
+            scope: profile_nickname, profile_image, account_email
+            authorization-grant-type: authorization_code
+            redirect-uri: http://13.209.136.242:8080/login/oauth2/code/kakao
             client-name: Kakao
         provider:
           kakao:
@@ -35,8 +33,8 @@ spring:
 
     data:
       redis:
-        port: ${REDIS_PORT}
-        host: ${REDIS_HOST}
+        port: 6379
+        host: redis
 
   jwt:
     key: ${JWT_KEY}
