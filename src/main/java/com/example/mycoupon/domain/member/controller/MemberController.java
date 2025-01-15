@@ -22,7 +22,6 @@ public class MemberController implements MemberApi {
     private final MemberService memberService;
 
     // access token을 복호화하여 사용자 정보 응답
-    @GetMapping("/member/info")
     public Response<?> getMemberInfo(@RequestHeader("Authorization") String authHeader) {
 
         String accessToken = TokenProvider.getTokenFromHeader(authHeader);
