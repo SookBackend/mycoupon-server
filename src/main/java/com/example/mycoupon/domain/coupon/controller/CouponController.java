@@ -19,7 +19,6 @@ import java.util.List;
 public class CouponController implements CouponApi {
 
     private final ConponService conponService;
-    private final MemberService memberService;
 
     public Response<Coupon> createCoupon(@PathVariable Long memberId, @RequestBody CouponRequestDto couponRequestDto) {
         Coupon coupon = conponService.createCoupon(memberId, couponRequestDto);

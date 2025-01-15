@@ -37,7 +37,6 @@ public class ConponService {
         Coupon coupon = Coupon.builder()
                 .title(couponRequestDto.getTitle())
                 .content(couponRequestDto.getContent())
-                .imageUrl(couponRequestDto.getImageUrl())
                 .issuerId(memberId)
                 .recipientIds(couponRequestDto.getRecipientIds())
                 .status(Status.ISSUED)
@@ -66,7 +65,6 @@ public class ConponService {
 
         coupon.setTitle(couponRequestDto.getTitle());
         coupon.setContent(couponRequestDto.getContent());
-        coupon.setImageUrl(couponRequestDto.getImageUrl());
         coupon.setRecipientIds(couponRequestDto.getRecipientIds());
         coupon.setExpirationDate(couponRequestDto.getExpirationDate());
         couponRepository.save(coupon);

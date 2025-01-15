@@ -23,8 +23,6 @@ public class Coupon {
 
     private String content;
 
-    private String imageUrl;
-
     private Long issuerId;
 
     @Convert(converter = LongListConverter.class)
