@@ -1,13 +1,13 @@
-package com.coupon.coupon_project;
+package com.example.mycoupon;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class DockerTestController {
+public class TestController {
 
     @GetMapping("/")
     public String test() {
-        return "Hello, CI/CD!";
+        return "Hello, cicd!";
     }
 }
