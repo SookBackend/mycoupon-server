@@ -24,7 +24,7 @@ spring:
             client-authentication-method: ${KAKAO_CLIENT_AUTHENTICATION_METHOD}
             scope: ${KAKAO_SCOPE}
             authorization-grant-type: ${KAKAO_AUTH_GRANT_TYPE}
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            redirect-uri: ${KAKAO_REDIRECT_URI}
             client-name: Kakao
         provider:
           kakao:
