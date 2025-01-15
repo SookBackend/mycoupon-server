@@ -35,7 +35,7 @@ jobs:
           sed -i 's|${KAKAO_SCOPE}|'"${{ secrets.KAKAO_SCOPE }}"'|g' application-prod.yml
           sed -i 's|${KAKAO_AUTH_GRANT_TYPE}|'"${{ secrets.KAKAO_AUTH_GRANT_TYPE }}"'|g' application-prod.yml
           sed -i 's|${REDIS_PORT}|'"${{ secrets.REDIS_PORT }}"'|g' application-prod.yml
-          sed -i 's|${KAKAO_AUTH_GRANT_TYPE}|'"${{ secrets.KAKAO_AUTH_GRANT_TYPE }}"'|g' application-prod.yml
+          sed -i 's|${REDIS_HOST}|'"${{ secrets.REDIS_HOST }}"'|g' application-prod.yml
           sed -i 's|${JWT_KEY}|'"${{ secrets.JWT_KEY }}"'|g' application-prod.yml
           
 
